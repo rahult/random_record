@@ -4,8 +4,8 @@ module ActiveRecord
 
   module RandomRecord
 
-    def random
-      offset(rand(self.count)).first
+    def random(count=1)
+      count == 1 ? offset(rand(self.count)).first : all.sort_by { rand }.sort_by { rand }.slice(0...count)
     end
 
   end
