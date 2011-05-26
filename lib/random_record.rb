@@ -12,4 +12,4 @@ module ActiveRecord
 
 end
 
-ActiveRecord::Base.send :extend, ActiveRecord::Random
+ActiveRecord::Base.send :extend, ActiveRecord::RandomRecord
