@@ -19,13 +19,56 @@ After updating your bundle, you can use Random function within any ActiveRecord 
 For example you can do something like this in your controller (**app/controllers/users_controller.rb**), view or presenter
 
 ```ruby
-RANDOM_LIMIT = 5
+class UsersController < ApplicationController
+  RANDOM_LIMIT = 5
 
-def index
-  @users = User.random(RANDOM_LIMIT)
-end
+  def index
+    @users = User.random(RANDOM_LIMIT)
+  end
 
-def show
-  @user = User.random
+  def show
+    @user = User.random
+  end
 end
 ```
+
+## Advanced Usage
+
+**Random Record** is _implemented_ as a **Class Method** within ActiveRecord Models
+and can only be attached to the end of a scope chain as it uses eager loading
+
+**What does the mean, _oh not so wise one?_**
+
+Rails 3 uses ActiveRecord::Relation for chaining things like scopes, joins, where, or order on your model. This allows Rails to chain these scopes without returning the data until really needed. This is referred to as lazily loading.
+
+This creates a contraint on the implementation of `random()` method
+
+`random()` method requires eager loading (required data has to be fetched from the database before creating a random set).
+
+This allows us the append this random method to the end of any **Arel chain**.
+
+```ruby
+class User < ActiveRecord::Base
+  scope :students, where("role = ?", "Student")
+end
+
+class UsersController < ApplicationController
+  RANDOM_LIMIT = 5
+
+  def index
+    @users = User.students.order("created_at DESC").random(RANDOM_LIMIT)
+  end
+
+  def show
+    @user = User.where("role <> ?", "Student").random
+  end
+end
+```
+
+But it restricts us to do something like this _(use this method within a scope chain)_
+
+<strike>
+```ruby
+@user = User.random(2).where("role <> ?", "Student")
+```
+</strike>
