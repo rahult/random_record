@@ -1,8 +1,8 @@
-# Random Record
+# Getting Started
 
-Random Record is a add on for ActiveRecord to give models the abilities to access random records
+**Random Record** is an add on for ActiveRecord to give Rails 3 Models the abilities to access random records
 
-## Getting Started
+## Installation
 
 Random Record is released as a Ruby Gem. The gem is to be installed within a Ruby
 on Rails 3 application. To install, simply add the following to your Gemfile:
@@ -14,7 +14,9 @@ gem 'random_record'
 
 After updating your bundle, you can use Random function within any ActiveRecord inherited model
 
-**app/controllers/users_controller.rb**
+## Usage
+
+For example you can do something like this in your controller (**app/controllers/users_controller.rb**), view or presenter
 
 ```ruby
 RANDOM_LIMIT = 5
