@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{Returns a random record for Ruby Models using ActiveRecord}
   s.homepage    = "https://github.com/rahult/random_record"
 
-  s.add_dependency('activerecord', '~> 3.0.0')
+  s.add_dependency('activerecord', '>= 3.0.0')
 
   s.rubyforge_project = "random_record"
 
