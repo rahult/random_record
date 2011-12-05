@@ -5,6 +5,7 @@ module ActiveRecord
   module RandomRecord
 
     def random(count=1)
+      return (count == 1) ? nil : [] if self.count == 0
       count == 1 ? offset(rand(self.count)).first : all.sort_by { rand }.sort_by { rand }.slice(0...count)
     end
 
