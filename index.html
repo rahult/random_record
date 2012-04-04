@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Random record : Adds Random Record functionality to ActiveRecord" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Random record</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/rahult/random_record">Fork Me on GitHub</a>
+
+          <h1 id="project_title">Random record</h1>
+          <h2 id="project_tagline">Adds Random Record functionality to ActiveRecord</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/rahult/random_record/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/rahult/random_record/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Getting Started</h1>
+
+<p><strong>Random Record</strong> is an add on for ActiveRecord to give Rails 3 Models the abilities to access random records</p>
+
+<h2>Installation</h2>
+
+<p>Random Record is released as a Ruby Gem. The gem is to be installed within a Ruby
+on Rails 3 application. To install, simply add the following to your Gemfile:</p>
+
+<div class="highlight">
+<pre><span class="c1"># Gemfile</span>
+<span class="n">gem</span> <span class="s1">'random_record'</span>
+</pre>
+</div>
+
+
+<p>After updating your bundle, you can use Random function within any ActiveRecord inherited model</p>
+
+<h2>Usage</h2>
+
+<p>For example you can do something like this in your controller (<strong>app/controllers/users_controller.rb</strong>), view or presenter</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="no">RANDOM_LIMIT</span> <span class="o">=</span> <span class="mi">5</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="no">RANDOM_LIMIT</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">random</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>Advanced Usage</h2>
+
+<p><strong>Random Record</strong> is <em>implemented</em> as a <strong>Class Method</strong> within ActiveRecord Models
+and can only be attached to the end of a scope chain as it uses eager loading</p>
+
+<p><strong>What does the mean, <em>oh not so wise one?</em></strong></p>
+
+<p>Rails 3 uses ActiveRecord::Relation for chaining things like scopes, joins, where, or order on your model. This allows Rails to chain these scopes without returning the data until really needed. This is referred to as lazily loading.</p>
+
+<p>This creates a contraint on the implementation of <code>random()</code> method</p>
+
+<p><code>random()</code> method requires eager loading (required data has to be fetched from the database before creating a random set).</p>
+
+<p>This allows us the append this random method to the end of any <strong>Arel chain</strong>.</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">scope</span> <span class="ss">:students</span><span class="p">,</span> <span class="n">where</span><span class="p">(</span><span class="s2">"role = ?"</span><span class="p">,</span> <span class="s2">"Student"</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="no">RANDOM_LIMIT</span> <span class="o">=</span> <span class="mi">5</span>
+
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">students</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s2">"created_at DESC"</span><span class="p">)</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="no">RANDOM_LIMIT</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"role &lt;&gt; ?"</span><span class="p">,</span> <span class="s2">"Student"</span><span class="p">)</span><span class="o">.</span><span class="n">random</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>But it restricts us to do something like this <em>(use this method within a scope chain)</em></p>
+
+<div class="highlight">
+<pre><span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"role &lt;&gt; ?"</span><span class="p">,</span> <span class="s2">"Student"</span><span class="p">)</span> <span class="c1"># Is not going to work</span>
+</pre>
+</div>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Random record maintained by <a href="https://github.com/rahult">rahult</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-30563163-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
