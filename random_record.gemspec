@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = ""
   s.summary     = %q{Random record for ActiveRecord Models}
   s.description = %q{Returns a random record for Ruby Models using ActiveRecord}
-  s.homepage    = "https://github.com/rahult/random_record"
+  s.homepage    = "http://rahult.github.com/random_record/"
 
   s.add_dependency('activerecord', '>= 3.0.0')
 
