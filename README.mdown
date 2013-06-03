@@ -1,4 +1,4 @@
-# Getting Started [![Code Climate](https://codeclimate.com/github/rahult/random_record.png)](https://codeclimate.com/github/rahult/random_record)
+# Getting Started [![Code Climate](https://codeclimate.com/github/rahult/random_record.png)](https://codeclimate.com/github/rahult/random_record) [![Dependency Status](https://gemnasium.com/rahult/random_record.png)](https://gemnasium.com/rahult/random_record) [![Gem Version](https://badge.fury.io/rb/random_record.png)](http://badge.fury.io/rb/random_record)
 
 **Random Record** is an add on for ActiveRecord to give Rails 3 Models the abilities to access random records
 
